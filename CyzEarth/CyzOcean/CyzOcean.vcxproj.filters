@@ -27,6 +27,12 @@
     <ClCompile Include="src\SphereSegment.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\CyzArgumentManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CyzBoatPositionCallback.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Scene.h">
@@ -45,6 +51,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\TextHUD.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CyzArgumentManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CyzBoatPositionCallback.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

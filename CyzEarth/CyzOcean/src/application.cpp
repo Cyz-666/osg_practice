@@ -42,152 +42,43 @@
 #include "Scene.h"
 #include "TextHUD.h"
 
-class BoatPositionCallback : public osg::NodeCallback
-{
-public: 
-    BoatPositionCallback(osgOcean::OceanScene* oceanScene)
-        : _oceanScene(oceanScene) {}
-
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        if(nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR ){
-            osg::MatrixTransform* mt = dynamic_cast<osg::MatrixTransform*>(node);
-            if (!mt || !_oceanScene.valid()) return;
-
-            osg::Matrix mat = osg::computeLocalToWorld(nv->getNodePath());
-            osg::Vec3d pos = mat.getTrans();
-
-            osg::Vec3f normal;
-            // Get the ocean surface height at the object's position, note
-            // that this only considers one point on the object (the object's
-            // geometric center) and not the whole object.
-            float height = _oceanScene->getOceanSurfaceHeightAt(pos.x(), pos.y(), &normal);
-
-            mat.makeTranslate(osg::Vec3f(pos.x(), pos.y(), height));
-
-            osg::Matrix rot;
-            rot.makeIdentity();
-            rot.makeRotate( normal.x(), osg::Vec3f(1.0f, 0.0f, 0.0f), 
-                            normal.y(), osg::Vec3f(0.0f, 1.0f, 0.0f),
-                            (1.0f-normal.z()), osg::Vec3f(0.0f, 0.0f, 1.0f));
-
-            mat = rot*mat;
-            mt->setMatrix(mat);
-        }
-
-        traverse(node, nv); 
-    }
-
-    osg::observer_ptr<osgOcean::OceanScene> _oceanScene;
-};
-
-
-// Useful argument lists:
-// Test shadows:
-//    --useShadows cessna.osg.(-2400,0,120).trans --initialCameraPosition -2400 -100 120
-
+#include "CyzBoatPositionCallback.h"
+#include "CyzArgumentManager.h"
 
 int main(int argc, char *argv[])
 {
     osg::notify(osg::NOTICE) << "osgOcean " << osgOceanGetVersion() << std::endl << std::endl;
 
     osg::ArgumentParser arguments(&argc,argv);
-    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an example of osgOcean.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] ...");
-    arguments.getApplicationUsage()->addCommandLineOption("--windx <x>","Wind X direction. Default 1.1");
-    arguments.getApplicationUsage()->addCommandLineOption("--windy <y>","Wind Y direction. Default 1.1");
-    arguments.getApplicationUsage()->addCommandLineOption("--windSpeed <speed>","Wind speed. Default: 12");
-    arguments.getApplicationUsage()->addCommandLineOption("--depth <depth>","Depth. Default: 10000");
-    arguments.getApplicationUsage()->addCommandLineOption("--isNotChoppy","Set the waves not choppy (by default they are).");
-    arguments.getApplicationUsage()->addCommandLineOption("--choppyFactor <factor>","How choppy the waves are. Default: 2.5");
-    arguments.getApplicationUsage()->addCommandLineOption("--crestFoamHeight <height>","How high the waves need to be before foam forms on the crest. Default: 2.2 ");
-    arguments.getApplicationUsage()->addCommandLineOption("--oceanSurfaceHeight <z>","Z position of the ocean surface in world coordinates. Default: 0.0");
-    arguments.getApplicationUsage()->addCommandLineOption("--testCollision","Test ocean surface collision detection by making a boat float on its surface.");
-    arguments.getApplicationUsage()->addCommandLineOption("--disableShaders","Disable use of shaders for the whole application. Also disables most visual effects as they depend on shaders.");
-
+    
     unsigned int helpType = 0;
-    if ((helpType = arguments.readHelpType()))
-    {
-        arguments.getApplicationUsage()->write(std::cout, helpType);
-        return 1;
-    }
-
-    // report any errors if they have occurred when parsing the program arguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-
-    float windx = 1.1f, windy = 1.1f;
-    while (arguments.read("--windx", windx));
-    while (arguments.read("--windy", windy));
+    
+    float windx = 0.8f, windy = 0.8f;		// original 1.1
     osg::Vec2f windDirection(windx, windy);
 
     float windSpeed = 12.f;
-    while (arguments.read("--windSpeed", windSpeed));
-
-    float depth = 1000.f;
-    while (arguments.read("--depth", depth));
-
+    float depth = 1000000.f;
     float reflectionDamping = 0.35f;
-    while (arguments.read("--reflectionDamping", reflectionDamping));
-
     float scale = 1e-8;
-    while (arguments.read("--waveScale", scale ) );
-
     bool isChoppy = true;
-    while (arguments.read("--isNotChoppy")) isChoppy = false;
-
     float choppyFactor = 2.5f;
-    while (arguments.read("--choppyFactor", choppyFactor));
     choppyFactor = -choppyFactor;
-
     float crestFoamHeight = 2.2f;
-    while (arguments.read("--crestFoamHeight", crestFoamHeight));
-
-    double oceanSurfaceHeight = 0.0f;
-    while (arguments.read("--oceanSurfaceHeight", oceanSurfaceHeight));
-
-    bool testCollision = false;
-    if (arguments.read("--testCollision")) testCollision = true;
-
+    double oceanSurfaceHeight = -10.0f;
+    //bool testCollision = false;
+    bool testCollision = true;
     bool disableShaders = false;
-    if (arguments.read("--disableShaders")) disableShaders = true;
-
     bool useVBO = false;
-    if (arguments.read("--vbo")) useVBO = true;
-
     bool compositeViewer = false;
-    if (arguments.read("--compositeViewer")) compositeViewer = true;
-
     bool firstViewLast = false;
-    if (arguments.read("--firstViewLast")) firstViewLast = true;
-
     bool disableEffectsForSecondView = false;
-    if (arguments.read("--disableEffectsForSecondView")) disableEffectsForSecondView = true;
-
     bool useShadows = false;
-    if (arguments.read("--useShadows")) useShadows = true;
-
     bool useDebugDraw = false;
-    if (arguments.read("--debugDraw")) useDebugDraw = true;
 
-    osg::Vec3 initialCameraPosition(0,0,20);
-    while (arguments.read("--initialCameraPosition", initialCameraPosition.x(), initialCameraPosition.y(), initialCameraPosition.z()));
+    osg::Vec3 initialCameraPosition(0,-10,20);
 
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occurred when parsing the program arguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
 
     //------------------------------------------------------------------------
     // Set up the scene
@@ -302,7 +193,8 @@ int main(int argc, char *argv[])
     if (testCollision)
     {
         osgDB::Registry::instance()->getDataFilePathList().push_back("resources/boat");
-        const std::string filename = "boat.3ds";
+        //const std::string filename = "boat.3DS";
+        const std::string filename = "craft-small.3DS";
         osg::ref_ptr<osg::Node> boat = osgDB::readNodeFile(filename);
 
         if(boat.valid())
@@ -313,15 +205,12 @@ int main(int argc, char *argv[])
                                CAST_SHADOW | RECEIVE_SHADOW );
 
             osg::ref_ptr<osg::MatrixTransform> boatTransform = new osg::MatrixTransform;
-            boatTransform->addChild(boat.get());
-            boatTransform->setMatrix(osg::Matrix::translate(osg::Vec3f(0.0f, 160.0f,0.0f)));
-            boatTransform->setUpdateCallback( new BoatPositionCallback(scene->getOceanScene()) );
+			osg::Matrix boatMatrix = osg::Matrix::translate(osg::Vec3f(0.0f, 360.0f, 0.0f)) * osg::Matrix::scale(0.015, 0.015, 0.015);
+			boatTransform->addChild(boat.get());
+            boatTransform->setMatrix(boatMatrix);
+            boatTransform->setUpdateCallback( new CyzBoatPositionCallback(scene->getOceanScene()) );
 
             scene->getOceanScene()->addChild(boatTransform.get());   
-        }
-        else
-        {
-            osg::notify(osg::WARN) << "testCollision flag ignored - Could not find: " << filename << std::endl;
         }
     }
 

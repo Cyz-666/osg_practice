@@ -1,4 +1,5 @@
 #pragma once
+#include <windows.h>
 #include <osg/Camera>
 #include <osg/Geode>
 #include <osg/PositionAttitudeTransform>

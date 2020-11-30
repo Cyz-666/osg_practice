@@ -16,6 +16,7 @@
 */
 
 #pragma once
+#include <windows.h>
 #include "SphereSegment.h"
 #include <osg/Program>
 #include <osg/Uniform>

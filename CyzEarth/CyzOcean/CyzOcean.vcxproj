@@ -126,11 +126,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\application.cpp" />
+    <ClCompile Include="src\CyzArgumentManager.cpp" />
+    <ClCompile Include="src\CyzBoatPositionCallback.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SkyDome.cpp" />
     <ClCompile Include="src\SphereSegment.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CyzArgumentManager.h" />
+    <ClInclude Include="include\CyzBoatPositionCallback.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\SceneEventHandler.h" />
     <ClInclude Include="include\ScopedTimer.h" />

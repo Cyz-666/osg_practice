@@ -1,4 +1,6 @@
 #pragma once
+
+#include <windows.h>
 #include <osg/Switch>
 #include <osg/TextureCubeMap>
 

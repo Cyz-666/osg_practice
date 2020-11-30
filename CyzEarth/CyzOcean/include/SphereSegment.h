@@ -16,6 +16,7 @@
 */
 
 #pragma once
+#include <windows.h>
 #include <osg/Geode>
 #include <osg/Geometry>
 

@@ -1,5 +1,3 @@
-
-#include <windows.h>
 #include "Scene.h"
 #include "ScopedTimer.h"
 
@@ -312,7 +310,7 @@ void Scene::changeScene( SCENE_TYPE type )
 osg::Node* Scene::loadIslands(const std::string& terrain_shader_basename)
 {
     osgDB::Registry::instance()->getDataFilePathList().push_back("resources/island");
-    const std::string filename = "islands.ive";
+    const std::string filename = "island/islands.ive";
     osg::ref_ptr<osg::Node> island = osgDB::readNodeFile(filename);
 
     if(!island.valid()){

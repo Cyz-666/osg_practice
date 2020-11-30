@@ -1,4 +1,5 @@
 #pragma once
+#include <windows.h>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/FlightManipulator>
 #include <osgGA/TrackballManipulator>

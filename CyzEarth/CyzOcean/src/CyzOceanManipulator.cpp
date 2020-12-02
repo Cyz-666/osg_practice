@@ -1,3 +1,4 @@
+#include "windows.h"
 #include "CyzOceanManipulator.h"
 
 CyzOceanManipulator::CyzOceanManipulator(osg::Node* boat)

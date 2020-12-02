@@ -65,14 +65,13 @@ int main(int argc, char *argv[])
     choppyFactor = -choppyFactor;
     float crestFoamHeight = 2.2f;
     double oceanSurfaceHeight = -10.0f;
-    //bool testCollision = false;
-    bool testCollision = true;
+    bool testCollision = true;  // false origianl
     bool disableShaders = false;
     bool useVBO = false;
-    bool compositeViewer = false;
+    bool compositeViewer = false;	// false original
     bool firstViewLast = false;
     bool disableEffectsForSecondView = false;
-    bool useShadows = false;
+    bool useShadows = false;		// false (original)
     bool useDebugDraw = false;
 
     osg::Vec3 initialCameraPosition(0,-10,20);

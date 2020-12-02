@@ -36,6 +36,9 @@
     <ClCompile Include="src\CyzOceanManipulator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\CyzOceanManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Scene.h">
@@ -63,6 +66,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\CyzOceanManipulator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CyzOceanManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

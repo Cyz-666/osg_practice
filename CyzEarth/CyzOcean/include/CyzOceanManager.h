@@ -28,6 +28,9 @@ public:
 	osg::Group* getShadowRoot(Scene* scene, bool useShadows, bool disableShaders, bool useDebugDraw);
 
 	bool initScene(Scene* scene, bool disableShaders);
+
+	// ¼ÓÔØ´¬Ä£ÐÍ
+	bool loadBoat(Scene* scene, bool testCollision);
 private:
 	CyzOceanManager();
 private:

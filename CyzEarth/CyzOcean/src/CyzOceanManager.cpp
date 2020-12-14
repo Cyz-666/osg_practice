@@ -7,6 +7,8 @@
 
 #include "osgOcean/ShaderManager"
 
+#include "CyzBoatPositionCallback.h"
+
 
 CyzOceanManager* CyzOceanManager::_instance = NULL;
 OpenThreads::Mutex CyzOceanManager::_mutex;
@@ -130,6 +132,33 @@ bool CyzOceanManager::initScene(Scene* scene, bool disableShaders)
 		scene->getOceanScene()->enableRefractions(false);
 		scene->getOceanScene()->enableGodRays(false);  // Could be done in fixed pipeline?
 		scene->getOceanScene()->enableSilt(false);     // Could be done in fixed pipeline?
+
+		return true;
+	}
+	return false;
+}
+
+bool CyzOceanManager::loadBoat(Scene* scene, bool testCollision)
+{
+	osgDB::Registry::instance()->getDataFilePathList().push_back("resources/boat");
+	//const std::string filename = "boat.3DS";
+	const std::string filename = "craft-small.3DS";
+	osg::ref_ptr<osg::Node> boat = osgDB::readNodeFile(filename);
+
+	if (boat.valid())
+	{
+		boat->setNodeMask(scene->getOceanScene()->getNormalSceneMask() |
+			scene->getOceanScene()->getReflectedSceneMask() |
+			scene->getOceanScene()->getRefractedSceneMask() |
+			CAST_SHADOW | RECEIVE_SHADOW);
+
+		osg::ref_ptr<osg::MatrixTransform> boatTransform = new osg::MatrixTransform;
+		osg::Matrix boatMatrix = osg::Matrix::translate(osg::Vec3f(0.0f, 360.0f, 0.0f)) * osg::Matrix::scale(0.015, 0.015, 0.015);
+		boatTransform->addChild(boat.get());
+		boatTransform->setMatrix(boatMatrix);
+		boatTransform->setUpdateCallback(new CyzBoatPositionCallback(scene->getOceanScene()));
+
+		scene->getOceanScene()->addChild(boatTransform.get());
 
 		return true;
 	}

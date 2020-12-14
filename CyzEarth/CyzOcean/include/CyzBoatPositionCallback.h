@@ -25,7 +25,7 @@ private:
 	double getRotationAngle();
 private:
 	// 1. 定义y方向最远(最近)航行距离
-	const double Y_MAX_TRAVEL_DISTENCE = 65000;
+	const double Y_MAX_TRAVEL_DISTENCE = 650000;
 	const double Y_MIN_TRAVEL_DISTANCE = 40000;
 
 	// 2. 定义x方向最远(最近)航行距离

@@ -56,33 +56,33 @@ Scene::Scene(
     _cubemapDirs.push_back( "sky_dusk" );
     _cubemapDirs.push_back( "sky_fair_cloudy" );
 
-    _fogColors.push_back( intColor( 199,226,255 ) );
-    _fogColors.push_back( intColor( 244,228,179 ) );
-    _fogColors.push_back( intColor( 172,224,251 ) );
+    _fogColors.push_back( intColor( 199,226,255, 255) );
+    _fogColors.push_back( intColor( 244,228,179, 255) );
+    _fogColors.push_back( intColor( 172,224,251, 255) );
 
-    _waterFogColors.push_back( intColor(27,57,109) );
-    _waterFogColors.push_back( intColor(44,69,106 ) );
-    _waterFogColors.push_back( intColor(84,135,172 ) );
+    _waterFogColors.push_back( intColor(27,57,109, 255) );
+    _waterFogColors.push_back( intColor(44,69,106, 255) );
+    _waterFogColors.push_back( intColor(84,135,172, 255) );
 
     _underwaterAttenuations.push_back( osg::Vec3f(0.015f, 0.0075f, 0.005f) );
     _underwaterAttenuations.push_back( osg::Vec3f(0.015f, 0.0075f, 0.005f) );
     _underwaterAttenuations.push_back( osg::Vec3f(0.008f, 0.003f, 0.002f) );
 
-    _underwaterDiffuse.push_back( intColor(27,57,109) );
-    _underwaterDiffuse.push_back( intColor(44,69,106) );
-    _underwaterDiffuse.push_back( intColor(84,135,172) );
+    _underwaterDiffuse.push_back( intColor(27,57,109, 255) );
+    _underwaterDiffuse.push_back( intColor(44,69,106, 255) );
+    _underwaterDiffuse.push_back( intColor(84,135,172, 255) );
 
-    _lightColors.push_back( intColor( 105,138,174 ) );
-    _lightColors.push_back( intColor( 105,138,174 ) );
-    _lightColors.push_back( intColor( 105,138,174 ) );
+    _lightColors.push_back( intColor( 105,138,174, 255) );
+    _lightColors.push_back( intColor( 105,138,174, 255) );
+    _lightColors.push_back( intColor( 105,138,174, 255) );
 
     _sunPositions.push_back( osg::Vec3f(326.573, 1212.99 ,1275.19) );
     _sunPositions.push_back( osg::Vec3f(520.f, 1900.f, 550.f ) );
     _sunPositions.push_back( osg::Vec3f(-1056.89f, -771.886f, 1221.18f ) );
 
-    _sunDiffuse.push_back( intColor( 191, 191, 191 ) );
-    _sunDiffuse.push_back( intColor( 251, 251, 161 ) );
-    _sunDiffuse.push_back( intColor( 191, 191, 191 ) );
+    _sunDiffuse.push_back( intColor( 191, 191, 191, 255 ) );
+    _sunDiffuse.push_back( intColor( 251, 251, 161, 255 ) );
+    _sunDiffuse.push_back( intColor( 191, 191, 191, 255 ) );
 
     build(windDirection, windSpeed, depth, reflectionDamping, scale, isChoppy, choppyFactor, crestFoamHeight, _useVBO, terrain_shader_basename);
 }
@@ -201,8 +201,8 @@ void Scene::build(
                 // 0 is used as a base texture map.
                 osg::Image * image = new osg::Image;
                 image->allocateImage( 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE );
-                *(osg::Vec4ub*)image->data() = osg::Vec4ub( 0xFF, 0xFF, 0xFF, 0xFF );
-
+                //*(osg::Vec4ub*)image->data() = osg::Vec4ub( 0xFF, 0xFF, 0xFF, 0xFF );
+				*(osg::Vec4ub*)image->data() = osg::Vec4ub(255, 255, 255, 255);
                 osg::Texture2D* fakeTex = new osg::Texture2D( image );
                 fakeTex->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
                 fakeTex->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
@@ -360,7 +360,7 @@ osg::ref_ptr<osg::TextureCubeMap> Scene::loadCubeMapTextures( const std::string&
     filenames[NEG_Y] = "resources/textures/" + dir + "/up.png";
 
     osg::ref_ptr<osg::TextureCubeMap> cubeMap = new osg::TextureCubeMap;
-    cubeMap->setInternalFormat(GL_RGBA);
+    //cubeMap->setInternalFormat(GL_RGBA);
 
     cubeMap->setFilter( osg::Texture::MIN_FILTER,    osg::Texture::LINEAR_MIPMAP_LINEAR);
     cubeMap->setFilter( osg::Texture::MAG_FILTER,    osg::Texture::LINEAR);
